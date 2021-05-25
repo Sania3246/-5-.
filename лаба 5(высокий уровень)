@@ -1,0 +1,147 @@
+//3 вариант.Файл состоит из k компонент структуры, где каждая компонента содержит две матрицы: первая размерности n × m , вторая размерности m ×l .
+//Получить k произведений соответствующих матриц и записать их во второй файл. Вывести на экран содержимое первого и второго файлов.
+#include <io.h> 
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h> 
+#include <process.h>
+void DisplayFile(char* String, char* Mode, unsigned n, unsigned m)
+
+{
+
+	int BufSize = sizeof(int) * n * m, Sector = 0; int* Pointer = FreeMemory(n, m);
+
+	FILE* FilePointer = fopen(String, Mode);
+
+	if (FilePointer == NULL)
+
+	{
+
+		printf("\nCan't open file to read."); getch();
+
+		abort();
+
+	}
+
+
+#define TRUE 1
+while (fread(Pointer, BufSize, 1, FilePointer) != 0)
+
+{
+
+	printf("\n %d's matrix \n", (Sector + 1)); DisplayMatrix(Pointer, n, m);
+
+	Sector++;
+
+}
+
+fclose(FilePointer);
+
+free(Pointer);
+
+}
+
+void DisplayMatrix(int* Pointer, unsigned n, unsigned m)
+
+{
+
+	unsigned i, j;
+
+	for (i = 0; i < n; i++)
+
+	{
+
+		for (j = 0; j < m; j++)
+
+		{
+
+			printf("%4d", *(Pointer + i * m + j));
+
+		}
+
+		printf("\n");
+
+	}
+
+}
+
+int* SimpleMatrix(unsigned n, unsigned m)
+
+{
+
+	unsigned i;
+
+	int* Pointer = (int*)malloc(sizeof(int) * n * m); for (i = 0; i < n * m; i++)
+
+	{
+
+		*(Pointer + i) = 0;
+
+	}
+
+	return Pointer;
+
+}
+
+int SumElemMatrix(int* Pointer, unsigned n, unsigned m)
+
+{
+
+	int s = 0; unsigned i;
+
+	for (i = 0; i < n * m; i++)
+
+	{
+
+		s = s + *(Pointer + i);
+
+	}
+
+	111
+
+		+
+		return s;
+
+}
+
+void WorkFile(char* String, char* Mode, unsigned n, unsigned m)
+
+{
+
+	int* Pointer = FreeMemory(n, m); int BufSize = sizeof(int) * n * m; int* Simple, Sum = 0;
+
+	FILE* FilePointer = fopen(String, Mode);
+
+	if (FilePointer == NULL)
+
+	{
+
+		printf("Can't open file to read."); getch();
+
+		abort();
+
+	}
+
+	while (fread(Pointer, BufSize, 1, FilePointer) != 0)
+
+	{
+
+		Sum = SumElemMatrix(Pointer, n, m); if (Sum % 2 == 0)
+
+		{
+
+			fseek(FilePointer, -1L * BufSize, SEEK_CUR); Simple = SimpleMatrix(n, m);
+
+			fwrite(Simple, BufSize, 1, FilePointer); fseek(FilePointer, 0L, SEEK_CUR);
+
+		}
+
+	}
+
+	fclose(FilePointer);
+
+	free(Pointer);
+
+	free(Simple);
+
+}
